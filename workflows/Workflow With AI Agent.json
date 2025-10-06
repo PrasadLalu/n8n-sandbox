@@ -1,0 +1,178 @@
+{
+  "name": "Workflow With AI Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -288,
+        -32
+      ],
+      "id": "b57fa830-5279-48b5-9fcb-4da3a73817dd",
+      "name": "When chat message received",
+      "webhookId": "1785b6a1-304e-4719-ab59-7035f63d3e2e"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b50ad3ae-b607-4d41-bb10-e3e410ac3b5f",
+              "name": "chatInput",
+              "value": "={{ $json.chatInput }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -80,
+        -32
+      ],
+      "id": "f94ae5a6-0ddc-4e49-ac90-0b4f01bf5ad2",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        128,
+        -32
+      ],
+      "id": "ae328bff-6d60-44fb-99c1-31848f3490f3",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "gemma2-9b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        176
+      ],
+      "id": "efc4c490-8e05-45e5-88b6-6b971b411f91",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "DHBGNK7H7b65Q8eU",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        144,
+        176
+      ],
+      "id": "365ce2b1-6be9-424b-a576-cb14a1465b2c",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fa4fe6f7-f8bc-4460-a1f7-9b6b342e2748",
+              "name": "output",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        -9.199999999999932
+      ],
+      "id": "af525309-b203-46b0-9f80-00012f5ad943",
+      "name": "Edit Fields1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "995e32da-ce4e-47df-96e1-fc92503f844b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d6b4e1dbcf8c56c792d35b202ff260bcdc8af1e504261b5eb3cc0f4d9db87c69"
+  },
+  "id": "PRwgpXg7wapoprWu",
+  "tags": []
+}

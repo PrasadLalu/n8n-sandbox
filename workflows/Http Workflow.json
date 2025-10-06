@@ -1,0 +1,148 @@
+{
+  "name": "Http Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi there! 👋\nMy name is Lalu Mahato. How can I assist you today?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -320,
+        -16
+      ],
+      "id": "7fa219ed-f8c1-4cc9-89b8-c2666d88f1b9",
+      "name": "When chat message received",
+      "webhookId": "6a459ff0-22d8-4c00-972f-10dd782be7f8"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "68d76b6c-af33-43e0-9407-005fb6b21837",
+              "name": "chatInput",
+              "value": "={{ $json.chatInput }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -112,
+        -16
+      ],
+      "id": "5e21ee3c-368e-4344-b144-077780fc533b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.euron.one/api/v1/euri/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"messages\": [\n      {\n        \"role\": \"user\",\n        \"content\": \"`{{ $json.chatInput }}`\"\n      }\n    ],\n    \"model\": \"gpt-4.1-nano\",\n    \"max_tokens\": 1000,\n    \"temperature\": 0.7\n  }\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        96,
+        -16
+      ],
+      "id": "946735b7-c758-4f50-a8e7-b7adf1671b30",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "UNCLaOD7XGzqPKFJ",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ff0a13a7-12c0-4d00-8683-9e4a842d5ebe",
+              "name": "choices[0].message.content",
+              "value": "={{ $json.choices[0].message.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        304,
+        -16
+      ],
+      "id": "228d14aa-e333-4968-ba1b-197b2ed26801",
+      "name": "Edit Fields1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c1fbc6a9-642a-4398-9fde-09b9f603bd6c",
+  "meta": {
+    "instanceId": "d6b4e1dbcf8c56c792d35b202ff260bcdc8af1e504261b5eb3cc0f4d9db87c69"
+  },
+  "id": "fw16MHNTj3ZjeQy6",
+  "tags": []
+}
